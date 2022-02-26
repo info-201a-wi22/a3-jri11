@@ -1,0 +1,99 @@
+---
+title: "Incarceration rates in the state of Louisiana"
+author: "Jessy Irvine"
+date: "2/25/2022"
+output: html_document
+---
+## Introduction 
+Within this report, I chose to analyze and explore the incarceration rate of Black individuals as compared to white individuals. More specifically, using the black and white population in the Orleans Parish of Louisiana. I chose Louisiana because as they are a very diverse state, there can still be injustice of disproportionate black incarcerations found within its jail system and racist biases. This injustice is seen in the data throughout the years 1990 to 2018. The variables I chose to analyze were the total black population, the total black **jail** population, white jail population, and the year. Through these variables I am using them to show how white people are historically jailed less than black people. 
+---
+## Summary Information 
+Some values of interest can be seen with the total black population and the total black **jail** population. The total population and the jail population were much closer together than the total white population and total jail population. This was almost doubled and can be seen in chart 2. Another value of interest is the years. From 1990 to 2018 we can see a dip in the black jail population, whereas there is a constant line through the white jail population. This shows that white people have historically been consistently given a low amount of jail sentences where black individuals have experienced far more. 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#adding necessary packages 
+library(dplyr)
+library(ggplot2)
+
+#reading the csv file with sorted data
+incarceration_trend <- read.csv(".\\a3-jri11\\source\\LA_OP_INCAR.csv")
+
+# Chart one, a trend that shows jail incarceration rate over time for black 
+#individuals in the the Orleans Parish. 
+ggplot(incarceration_trend) + 
+  geom_line(
+    mapping = aes(x = year, y = black_jail_pop)
+  )#adding necessary packages 
+library(dplyr)
+library(ggplot2)
+
+#reading the csv file with sorted data
+incarceration_trend <- read.csv(".\\a3-jri11\\source\\LA_OP_INCAR.csv")
+
+# Chart one, a trend that shows jail incarceration rate over time for black 
+#individuals in the the Orleans Parish. 
+ggplot(incarceration_trend) + 
+  geom_line(
+    mapping = aes(x = year, y = black_jail_pop)
+  )
+```
+
+## Trends Over Time 
+With the first chart, it is a simple visualization of the incarnation of black individuals over the years 1990-2018 in the Orleans Parish of Louisiana. In showing this, the large amount of people that are being incarcerated over the small amount of white people. This solidifies the issue that the United States Jail system is unjust. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#The second chat shows the difference between black jail population, and white 
+#jail population, also within the Louisiana Orleans Parish 
+ggplot() + 
+ geom_line(data = incarceration_trend, mapping = aes(x = year, y = black_jail_pop), color = "orange")+
+  geom_point(data = incarceration_trend, mapping = aes(x = year, y = black_jail_pop), color = "orange")+
+  geom_line(data = incarceration_trend, mapping = aes(x = year, y = white_jail_pop), color = "red")+
+  geom_point(data = incarceration_trend, mapping = aes(x = year, y = white_jail_pop), color = "red")+
+  labs(x = "Year", y = "Black jail population (orange) and white jail population (red)", title = "Black and White Population Incarceration Trends")
+
+```
+
+## Variable comparison 
+Again, as stated, this second chart directly compares the two populations and how many are being jailed from each. In showing these two lines on the same graph, it once again solidifies that there are far too many black individuals in jail than there are white individuals. Not only is this true for jail, but also nationally in prison (which is present in the data, but not shown here). This comparison, while not with words but numbers, can show the racist ideals Americans have implemented into the justice system that have been present for decades. 
+--- 
+## Map
+Putting the data on a smaller scale, this map shows the incarceration trends in Louisiana by county. Throughout the map, the jail population of black individuals varies, but still, is a much higher number than white individuals, all over the state. Since the trend of racist infrastructure and racial biases is so heavily prevalent on a small state scale, it is expected that the rest of the U.S either follows similar trends, or has more extreme cases of the trend.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#The map will exemplify this disproportionate incarceration trend, in all of 
+#Louisiana, not just the Orleans Parish. 
+library(ggplot2)
+library(dplyr)
+library(maps)
+library(viridis)
+
+state <- c("Louisiana")
+world_map <- map_data("world", region = state)
+
+region.lab.data <- state %>%
+  group_by(region) %>%
+  summarise(long = mean(long), lat = mean(lat))
+
+LAI <- LA_INCAR_trends %>%
+  select(V2, V29) %>%
+  
+  mutate(
+    region = ifelse(region == "USA")
+  )
+
+world_map <- map_data("world")
+LAI <- left_join(LAI, world_map, by = "region")
+
+ggplot()
+ggplot(LAI, aes(long, lat, ,group = group)) +
+  geom_polygon(aes(fil = LA_INCAR_trends), color = "orange")+
+  scale_fill_viridis_c(option = "C")
+  
+```
+
